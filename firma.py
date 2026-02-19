@@ -4,6 +4,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 DOCS_DIR= os.path.join(BASE_DIR, "docs_salida")
+os.makedirs(DOCS_DIR, exist_ok=True)
+
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 #Librerias para abrir el explorador de Archivos y manipular pdfs 
 import tkinter as tk
@@ -23,6 +25,8 @@ from datetime import datetime
 #librerias para el diseño y tamaño
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
+from services.email_service import enviar_documento
+
 #
 def seleccionar_pdf_desde_explorador() -> str | None:
    
@@ -239,6 +243,20 @@ nombre_salida = os.path.join(DOCS_DIR,"pdf_firmado.pdf")
 with open(nombre_salida, "wb") as salida:
         escritor_pdf.write(salida)
         print("PDF Firmado Exitosamente")
+
+
+try:
+    correo_destino = input("Ingrese el correo al cual enviar el documento firmado: ")
+
+    enviar_documento(
+        correo_destino,
+        nombre_salida,
+        ruta_foto
+    )
+
+except Exception as e:
+    print("Error al enviar el correo:", e)
+
 
 
 
